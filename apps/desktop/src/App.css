@@ -155,6 +155,52 @@ button:hover:not(:disabled) {
   color: #31405b;
 }
 
+.voice-panel {
+  margin-top: 28px;
+  border-top: 1px solid #dce3ec;
+  padding-top: 24px;
+}
+
+.voice-panel h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.voice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.secondary-button {
+  border-color: #c9d3df;
+  background: #ffffff;
+  color: #233049;
+}
+
+.secondary-button:hover:not(:disabled) {
+  border-color: #3972c4;
+  background: #eef5ff;
+}
+
+.assistant-message {
+  display: grid;
+  min-height: 96px;
+  margin-top: 12px;
+  place-items: center;
+  border: 1px solid #b8d4c7;
+  border-radius: 8px;
+  background: #f0faf5;
+  padding: 18px;
+  color: #17633f;
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-align: center;
+}
+
 @media (max-width: 620px) {
   .app-shell {
     padding: 16px;
@@ -171,5 +217,9 @@ button:hover:not(:disabled) {
   .input-row,
   .quick-grid {
     grid-template-columns: 1fr;
+  }
+
+  .voice-actions {
+    display: grid;
   }
 }

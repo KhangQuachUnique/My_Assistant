@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import "./App.css";
 
 type ToolResponse = {
@@ -9,6 +10,15 @@ type ToolResponse = {
     app?: string;
     resolvedTarget?: string;
   };
+};
+
+type VoiceEvent = {
+  type?: string;
+  value?: string;
+  model?: string;
+  score?: number;
+  threshold?: number;
+  message?: string;
 };
 
 const quickApps = [
@@ -22,6 +32,45 @@ function App() {
   const [appName, setAppName] = useState("notepad");
   const [status, setStatus] = useState("Nhap ten app hoac chon nhanh ben duoi.");
   const [isOpening, setIsOpening] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState("Voice worker chua chay.");
+  const [isVoiceRunning, setIsVoiceRunning] = useState(false);
+  const [assistantMessage, setAssistantMessage] = useState("Bam Start voice roi noi wake word.");
+
+  useEffect(() => {
+    const unlistenPromise = listen<VoiceEvent>("voice_event", (event) => {
+      const voiceEvent = event.payload;
+
+      if (voiceEvent.type === "status") {
+        setVoiceStatus(`Voice: ${voiceEvent.value ?? "unknown"}`);
+      }
+
+      if (voiceEvent.type === "wake_model_loaded") {
+        setVoiceStatus(
+          `Da load wake model: ${voiceEvent.model ?? "unknown"} | threshold ${formatScore(
+            voiceEvent.threshold,
+          )}`,
+        );
+      }
+
+      if (voiceEvent.type === "wake_score") {
+        setVoiceStatus(`Dang lang nghe... score ${formatScore(voiceEvent.score)}`);
+      }
+
+      if (voiceEvent.type === "wake_word_detected") {
+        setAssistantMessage("Chao ban");
+        setVoiceStatus(`Da nghe thay wake word (${formatScore(voiceEvent.score)})`);
+      }
+
+      if (voiceEvent.type === "worker_error" || voiceEvent.type === "error") {
+        setVoiceStatus(`Voice loi: ${voiceEvent.message ?? "unknown error"}`);
+        setAssistantMessage("Voice worker dang gap loi.");
+      }
+    });
+
+    return () => {
+      void unlistenPromise.then((unlisten) => unlisten());
+    };
+  }, []);
 
   async function openSelectedApp(nextAppName = appName) {
     const trimmedAppName = nextAppName.trim();
@@ -51,6 +100,28 @@ function App() {
       setStatus(`Loi: ${String(error)}`);
     } finally {
       setIsOpening(false);
+    }
+  }
+
+  async function startVoiceWorker() {
+    try {
+      setVoiceStatus("Dang start voice worker...");
+      setAssistantMessage("Dang lang nghe wake word...");
+      await invoke("start_voice_worker");
+      setIsVoiceRunning(true);
+    } catch (error) {
+      setVoiceStatus(`Voice loi: ${String(error)}`);
+    }
+  }
+
+  async function stopVoiceWorker() {
+    try {
+      await invoke("stop_voice_worker");
+      setIsVoiceRunning(false);
+      setVoiceStatus("Voice worker da dung.");
+      setAssistantMessage("Bam Start voice roi noi wake word.");
+    } catch (error) {
+      setVoiceStatus(`Voice loi: ${String(error)}`);
     }
   }
 
@@ -107,9 +178,46 @@ function App() {
         <p className="status" role="status">
           {status}
         </p>
+
+        <section className="voice-panel" aria-labelledby="voice-title">
+          <div>
+            <p className="eyebrow">Wake word test</p>
+            <h2 id="voice-title">Python voice worker</h2>
+          </div>
+
+          <div className="voice-actions">
+            <button
+              type="button"
+              disabled={isVoiceRunning}
+              onClick={() => void startVoiceWorker()}
+            >
+              Start voice
+            </button>
+            <button
+              type="button"
+              className="secondary-button"
+              disabled={!isVoiceRunning}
+              onClick={() => void stopVoiceWorker()}
+            >
+              Stop voice
+            </button>
+          </div>
+
+          <p className="status" role="status">
+            {voiceStatus}
+          </p>
+
+          <div className="assistant-message" role="status" aria-live="polite">
+            {assistantMessage}
+          </div>
+        </section>
       </section>
     </main>
   );
+}
+
+function formatScore(score?: number) {
+  return typeof score === "number" ? score.toFixed(3) : "n/a";
 }
 
 export default App;
