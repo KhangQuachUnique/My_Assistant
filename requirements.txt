@@ -1,0 +1,9 @@
+ruff
+numpy
+sounddevice
+soundfile
+onnxruntime
+transformers
+torch
+librosa
+openwakeword

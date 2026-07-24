@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "dev:desktop": "npm run tauri dev --workspace=apps/desktop",
-    "build:desktop": "npm run tauri build --workspace=apps/desktop"
+    "build:desktop": "npm run tauri build --workspace=apps/desktop",
+    "lint:desktop": "npm run lint --workspace=apps/desktop"
   }
 }
