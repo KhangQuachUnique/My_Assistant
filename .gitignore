@@ -1,0 +1,78 @@
+# =========================
+# Node.js / React / Tauri UI
+# =========================
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# =========================
+# Rust / Tauri
+# =========================
+target/
+
+# Không ignore Cargo.lock đối với application
+# Cargo.lock nên được commit
+
+# =========================
+# Python
+# =========================
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+# Godot
+# =========================
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+
+# Bản export Godot
+apps/avatar/build/
+apps/avatar/exports/
+
+# =========================
+# Environment / secrets
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Runtime data
+# =========================
+data/database/*
+data/cache/*
+data/inputs/*
+data/outputs/*
+data/models/*
+
+# Giữ lại thư mục rỗng
+!data/database/.gitkeep
+!data/cache/.gitkeep
+!data/inputs/.gitkeep
+!data/outputs/.gitkeep
+!data/models/.gitkeep
+
+# =========================
+# Editor / operating system
+# =========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/

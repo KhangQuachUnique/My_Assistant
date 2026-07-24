@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b53c42xicevaw"]
+
+[ext_resource type="Script" uid="uid://dxit8fxfoven2" path="res://scripts/main.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://bppjasea2iq3l" path="res://assets/characters/width_785.png" id="2_0xm2m"]
+
+[node name="Main" type="Node2D" unique_id=1495445930]
+script = ExtResource("1_ig7tw")
+
+[node name="AvatarSprite" type="Sprite2D" parent="." unique_id=22821066]
+position = Vector2(-117, 406)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_0xm2m")
