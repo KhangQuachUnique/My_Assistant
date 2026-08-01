@@ -32,3 +32,7 @@ Thumbs.db
 desktop.ini
 .idea/
 .vscode/
+
+
+# Native GDExtension build output
+addons/**/bin/
