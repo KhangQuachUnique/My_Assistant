@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://b53c42xicevaw"]
+
+[ext_resource type="Script" uid="uid://7hmrs4s0osha" path="res://scripts/floor.gd" id="2_0wfyh"]
+[ext_resource type="Texture2D" uid="uid://bi7wdhhaagn5o" path="res://assets/characters/char_265.png" id="3_jyhfs"]
+[ext_resource type="Script" uid="uid://bb56srjut4awr" path="res://scripts/avatar_controller.gd" id="3_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://75o2340bm67w" path="res://assets/characters/char_265_speak.png" id="4_tbgi4"]
+[ext_resource type="Script" uid="uid://gfnktl0ovlxl" path="res://scripts/avatar_hit_region.gd" id="6_o6xl0"]
+[ext_resource type="Script" uid="uid://sgvei1b876n4" path="res://scripts/window_controller.gd" id="6_tefeu"]
+[ext_resource type="Script" uid="uid://8gco458xfbcn" path="res://scripts/native_click_through_controller.gd" id="7_o6xl0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hgo26"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hgo26"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_jyhfs")
+}],
+"loop": 0,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_tbgi4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jyhfs")
+}],
+"loop": 1,
+"name": &"speaking",
+"speed": 4.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
+size = Vector2(163, 67)
+
+[node name="Main" type="Node2D" unique_id=1495445930]
+
+[node name="WindowController" type="Node" parent="." unique_id=208188688]
+script = ExtResource("6_tefeu")
+
+[node name="Floor" type="StaticBody2D" parent="." unique_id=1374103802]
+script = ExtResource("2_0wfyh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=1701145445]
+shape = SubResource("RectangleShape2D_hgo26")
+
+[node name="Avatar" type="CharacterBody2D" parent="." unique_id=1576660123]
+script = ExtResource("3_tbgi4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Avatar" unique_id=1165216885]
+position = Vector2(0, -132.5)
+sprite_frames = SubResource("SpriteFrames_hgo26")
+animation = &"speaking"
+frame = 1
+frame_progress = 0.848414
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Avatar" unique_id=29551517]
+position = Vector2(0, -33.5)
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="HitRegion" type="Area2D" parent="Avatar" unique_id=1515861684]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("6_o6xl0")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Avatar/HitRegion" unique_id=439302369]
+polygon = PackedVector2Array(-92, -217, -79, -260, 35, -278, 96, -237, 86, -91, 69, 0, -33, -1, -26, -182)
+
+[node name="NativeClickThroughController" type="Node" parent="." unique_id=2058241228]
+script = ExtResource("7_o6xl0")
