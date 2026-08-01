@@ -1,14 +1,10 @@
-mod commands;
-mod services;
-
-use commands::tool_commands::run_tool;
+mod app;
+mod interface;
+mod modules;
+mod platform;
+mod shared;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            run_tool
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    app::run();
 }
