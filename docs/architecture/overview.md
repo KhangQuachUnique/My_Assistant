@@ -1,0 +1,71 @@
+# Architecture Overview
+
+This project is a desktop application. Treat the boundary as frontend UI plus Tauri runtime, not as a traditional web frontend/backend split.
+
+## Top-Level Shape
+
+```text
+apps/
+  desktop/
+    src/          # frontend UI
+    src-tauri/    # desktop runtime
+```
+
+The frontend should own presentation and user interaction.
+
+The Tauri runtime should own application lifecycle, local runtime modules, platform adapters, and IPC boundaries.
+
+## Tauri Runtime Layers
+
+```text
+src-tauri/src/
+  app/        # composition root, AppState, startup/shutdown lifecycle
+  interface/  # Tauri commands, events, and IPC adapters
+  modules/    # business/runtime modules
+  platform/   # OS-specific implementations
+  shared/     # shared config, error, and cross-cutting types
+```
+
+## Dependency Direction
+
+Preferred flow:
+
+```text
+frontend UI
+  -> interface/commands
+    -> app/AppState
+      -> modules
+        -> platform
+```
+
+Rules:
+
+- `interface` maps IPC input and output; it should not own business logic.
+- `app` wires dependencies and orchestrates startup/shutdown; it should not own module internals.
+- `modules` owns business and runtime rules; it should not depend directly on Tauri or OS APIs.
+- `platform` owns OS-specific behavior and external process details.
+- `shared` holds genuinely cross-cutting types only.
+
+## Runtime Modules
+
+A runtime module is a module that owns a live resource such as a process, listener, stream, worker, or background task.
+
+Runtime modules may implement `RuntimeModule`.
+
+Plain modules that only transform data should not implement lifecycle traits.
+
+## Frontend And Backend Docs
+
+Do not split architecture docs into frontend/backend files yet.
+
+Add focused docs later only when the area becomes large enough to need its own durable context, for example:
+
+- `frontend.md` for complex UI state or frontend architecture
+- `tauri-runtime.md` for runtime composition and IPC rules
+- a focused module contract such as `avatar-process-lifecycle.md`
+
+## Job-Specific Guides
+
+Do not create `docs/skills/` yet.
+
+Use `docs/workflows/` for repeated jobs until there are enough stable, specialized guides to justify a separate skills area.
