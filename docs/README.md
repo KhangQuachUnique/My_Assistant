@@ -8,6 +8,7 @@ This folder stores long-lived project context that should not live in `AGENTS.md
 - Git, Linear, and GitHub workflow: `workflows/git-linear-github.md`
 - Architecture docs: `architecture/README.md`
 - Architecture overview: `architecture/overview.md`
+- Product feature vision: `product/assistant-feature-vision.md`
 - Implementation history: `history/implementation-log.md`
 
 ## Current Structure
@@ -18,6 +19,8 @@ docs/
   architecture/
     README.md
     overview.md
+  product/
+    assistant-feature-vision.md
   history/
     implementation-log.md
   workflows/
