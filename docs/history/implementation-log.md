@@ -34,6 +34,13 @@ Keep entries short. Prefer useful context over completeness.
 
 ## 2026-08-05
 
+### AI-36 / AVT-001-02 - Implement Windows avatar process runner
+
+- Changed: added the Windows `AvatarProcessRunner` adapter and wired app composition to use it for avatar lifecycle startup and shutdown.
+- Decision: keep `std::process::Child` inside `platform/windows/avatar`; expose the Windows platform module only on Windows; keep lifecycle tests on the in-memory runner so `cargo test` does not spawn `avatar.exe`.
+- Validation: `cargo test` from `apps/desktop/src-tauri`, including runner-level duplicate-start coverage.
+- Follow-up: Tauri commands, IPC, readiness handshakes, and UI controls remain outside this issue.
+
 ### AI-35 / CORE-001-04 - Design AGENTS.md and docs routing for AI flow
 
 - Changed: created `AGENTS.md` as a short router and added minimal docs homes for workflows, architecture, and implementation history.
