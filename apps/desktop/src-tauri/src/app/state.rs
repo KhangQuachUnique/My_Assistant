@@ -2,28 +2,43 @@ use std::sync::{Mutex, MutexGuard};
 
 use crate::{
     app::status::ApplicationStatus,
-    modules::avatar::{AvatarModule, AvatarService},
+    modules::avatar::AvatarModule,
     shared::{config::AppConfig, error::AppError},
 };
 
 #[derive(Debug)]
-pub struct AppState {
+pub struct AppModules {
     avatar: AvatarModule,
+}
+
+impl AppModules {
+    pub fn new(avatar: AvatarModule) -> Self {
+        Self { avatar }
+    }
+
+    pub fn avatar(&self) -> &AvatarModule {
+        &self.avatar
+    }
+}
+
+#[derive(Debug)]
+pub struct AppState {
+    modules: AppModules,
     config: AppConfig,
     status: Mutex<ApplicationStatus>,
 }
 
 impl AppState {
-    pub fn new(config: AppConfig) -> Self {
+    pub fn new(config: AppConfig, modules: AppModules) -> Self {
         Self {
-            avatar: AvatarModule::new(AvatarService::new()),
+            modules,
             config,
             status: Mutex::new(ApplicationStatus::Created),
         }
     }
 
     pub fn avatar(&self) -> &AvatarModule {
-        &self.avatar
+        self.modules.avatar()
     }
 
     pub fn config(&self) -> &AppConfig {

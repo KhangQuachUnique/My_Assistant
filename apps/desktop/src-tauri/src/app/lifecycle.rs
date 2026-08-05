@@ -1,12 +1,24 @@
 use crate::{
-    app::{state::AppState, status::ApplicationStatus},
-    modules::runtime::RuntimeModule,
+    app::{
+        state::{AppModules, AppState},
+        status::ApplicationStatus,
+    },
+    modules::{
+        avatar::{AvatarModule, AvatarService},
+        runtime::RuntimeModule,
+    },
+    platform::windows::avatar::WindowsAvatarProcessRunner,
     shared::{config::AppConfig, error::AppError},
 };
 
 pub fn initialize() -> Result<AppState, AppError> {
     let config = AppConfig::default();
-    let app_state = AppState::new(config);
+
+    initialize_with_modules(config, build_app_modules())
+}
+
+fn initialize_with_modules(config: AppConfig, modules: AppModules) -> Result<AppState, AppError> {
+    let app_state = AppState::new(config, modules);
 
     app_state.transition(ApplicationStatus::Created, ApplicationStatus::Initializing)?;
 
@@ -15,6 +27,16 @@ pub fn initialize() -> Result<AppState, AppError> {
     app_state.transition(ApplicationStatus::Initializing, ApplicationStatus::Ready)?;
 
     Ok(app_state)
+}
+
+fn build_app_modules() -> AppModules {
+    AppModules::new(build_avatar_module())
+}
+
+fn build_avatar_module() -> AvatarModule {
+    AvatarModule::new(AvatarService::with_process(Box::new(
+        WindowsAvatarProcessRunner::new(),
+    )))
 }
 
 pub fn start(app_state: &AppState) -> Result<(), AppError> {
@@ -78,9 +100,17 @@ mod tests {
     use super::*;
     use crate::{app::status::ApplicationStatus, modules::runtime::ModuleLifecycleStatus};
 
+    fn initialize_for_test() -> AppState {
+        initialize_with_modules(
+            AppConfig::default(),
+            AppModules::new(AvatarModule::new(AvatarService::new())),
+        )
+        .expect("application initialization should succeed")
+    }
+
     #[test]
     fn initialize_moves_application_to_ready() {
-        let app_state = initialize().expect("application initialization should succeed");
+        let app_state = initialize_for_test();
 
         assert_eq!(
             app_state.status().expect("status should be readable"),
@@ -90,7 +120,7 @@ mod tests {
 
     #[test]
     fn start_moves_ready_application_to_running() {
-        let app_state = initialize().expect("application initialization should succeed");
+        let app_state = initialize_for_test();
 
         start(&app_state).expect("application start should succeed");
 
@@ -103,7 +133,7 @@ mod tests {
 
     #[test]
     fn shutdown_moves_running_application_to_stopped() {
-        let app_state = initialize().expect("application initialization should succeed");
+        let app_state = initialize_for_test();
 
         start(&app_state).expect("application start should succeed");
         shutdown(&app_state).expect("application shutdown should succeed");
@@ -117,7 +147,7 @@ mod tests {
 
     #[test]
     fn shutdown_is_idempotent() {
-        let app_state = initialize().expect("application initialization should succeed");
+        let app_state = initialize_for_test();
 
         start(&app_state).expect("application start should succeed");
 
@@ -132,7 +162,7 @@ mod tests {
 
     #[test]
     fn application_cannot_start_twice() {
-        let app_state = initialize().expect("application initialization should succeed");
+        let app_state = initialize_for_test();
 
         start(&app_state).expect("first start should succeed");
 

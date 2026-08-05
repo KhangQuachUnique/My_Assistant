@@ -16,4 +16,3 @@ pub enum AvatarRestartOutcome {
     Restarted,
     Started,
 }
-
