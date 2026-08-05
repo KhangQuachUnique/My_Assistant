@@ -2,11 +2,13 @@ use std::sync::{Mutex, MutexGuard};
 
 use crate::{
     app::status::ApplicationStatus,
+    modules::avatar::{AvatarModule, AvatarService},
     shared::{config::AppConfig, error::AppError},
 };
 
 #[derive(Debug)]
 pub struct AppState {
+    avatar: AvatarModule,
     config: AppConfig,
     status: Mutex<ApplicationStatus>,
 }
@@ -14,9 +16,14 @@ pub struct AppState {
 impl AppState {
     pub fn new(config: AppConfig) -> Self {
         Self {
+            avatar: AvatarModule::new(AvatarService::new()),
             config,
             status: Mutex::new(ApplicationStatus::Created),
         }
+    }
+
+    pub fn avatar(&self) -> &AvatarModule {
+        &self.avatar
     }
 
     pub fn config(&self) -> &AppConfig {
