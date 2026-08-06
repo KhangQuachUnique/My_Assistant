@@ -32,6 +32,15 @@ Use this shape:
 
 Keep entries short. Prefer useful context over completeness.
 
+## 2026-08-06
+
+### AI-39 / AVT-002-01 - Define avatar animation control contract
+
+- Changed: added the avatar control system architecture contract for `set_animation`, readiness, JSON-lines loopback transport, and frontend-safe command responses/errors.
+- Decision: use stable app-level animation names `idle`, `listening`, `thinking`, `speaking`, `success`, and `error`; Godot may fallback to current `idle`/`speaking` assets until richer animations exist.
+- Validation: docs review only; no runtime code changed.
+- Follow-up: implement the Tauri-to-Godot `set_animation` path, then add frontend debug controls.
+
 ## 2026-08-05
 
 ### AI-37 / AVT-001-03 - Expose avatar lifecycle Tauri commands

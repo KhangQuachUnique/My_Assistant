@@ -24,3 +24,5 @@ Do not update architecture docs for local implementation details that are obviou
 ## Current Docs
 
 - `overview.md` - top-level project architecture and Tauri runtime layers
+- `avatar-process-lifecycle.md` - process lifecycle contract for `avatar.exe`
+- `avatar-control-system.md` - animation control contract between frontend, Tauri, and Godot
