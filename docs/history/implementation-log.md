@@ -34,6 +34,13 @@ Keep entries short. Prefer useful context over completeness.
 
 ## 2026-08-05
 
+### AI-37 / AVT-001-03 - Expose avatar lifecycle Tauri commands
+
+- Changed: added Tauri command adapters for avatar `start`, `stop`, `restart`, and `status`; registered them in the Tauri builder.
+- Decision: keep command response and error DTOs in `interface/commands/avatar.rs`; commands call `AvatarModule` through managed `AppState` and do not manage processes directly.
+- Validation: `cargo test` from `apps/desktop/src-tauri`.
+- Follow-up: frontend controls and Tauri-to-Godot IPC remain outside this issue.
+
 ### AI-36 / AVT-001-02 - Implement Windows avatar process runner
 
 - Changed: added the Windows `AvatarProcessRunner` adapter and wired app composition to use it for avatar lifecycle startup and shutdown.
