@@ -15,6 +15,26 @@ The frontend should own presentation and user interaction.
 
 The Tauri runtime should own application lifecycle, local runtime modules, platform adapters, and IPC boundaries.
 
+## Frontend Layers
+
+```text
+apps/desktop/src/
+  app/       # React app composition, providers, and router creation
+  routes/    # route-level layouts and screens
+  features/  # user-facing workflows with local UI state and feature adapters
+  shared/    # reusable UI, utilities, and typed Tauri API adapters
+  styles/    # global styles and Tailwind entrypoint
+```
+
+Rules:
+
+- `app` wires router and provider composition; it should not own feature workflow logic.
+- `routes` owns route modules, route layouts, redirects, and not-found handling.
+- `features` is created only for real user workflows; it owns local UI state and feature-specific adapters.
+- `shared/api` owns typed frontend adapters for Tauri commands/events once those contracts exist, so React components avoid scattered direct IPC calls.
+- Use `api` or `client` for frontend boundary adapters; avoid a broad `services` folder unless it has a narrower owner such as `features/<name>/api`.
+- `shared/ui` is for genuinely reusable primitives, not one-off feature markup.
+
 ## Tauri Runtime Layers
 
 ```text
