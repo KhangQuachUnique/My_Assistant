@@ -34,6 +34,13 @@ Keep entries short. Prefer useful context over completeness.
 
 ## 2026-08-06
 
+### AI-42 / UI-001-01 - Refactor frontend architecture frame
+
+- Changed: added the frontend app/routes/features/shared/styles structure, React Router route shell, and Tailwind Vite integration.
+- Decision: use React Router data router configuration from `app/router.tsx`; keep route modules under top-level `routes`; add `features` and `shared/api` code only when real workflows or Tauri command contracts exist.
+- Validation: `npm run build --workspace=apps/desktop`.
+- Follow-up: add richer feature routes and reusable UI primitives only when real workflows need them.
+
 ### AI-39 / AVT-002-01 - Define avatar animation control contract
 
 - Changed: added the avatar control system architecture contract for `set_animation`, readiness, JSON-lines loopback transport, and frontend-safe command responses/errors.
