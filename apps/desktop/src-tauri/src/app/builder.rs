@@ -1,12 +1,16 @@
 use tauri::Manager;
 
-use crate::app::{lifecycle, state::AppState};
+use crate::{
+    app::{lifecycle, state::AppState},
+    interface::commands::avatar,
+};
 
 pub fn run() {
     let app_state = lifecycle::initialize().expect("failed to initialize application");
 
     let app = tauri::Builder::default()
         .manage(app_state)
+        .invoke_handler(avatar::handlers())
         .build(tauri::generate_context!())
         .expect("failed to build Tauri application");
 
